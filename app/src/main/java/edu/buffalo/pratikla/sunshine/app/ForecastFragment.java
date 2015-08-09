@@ -51,15 +51,13 @@ public class ForecastFragment extends Fragment {
         // rootView contains the fragment and we can use the view to access views inside it
         View rootView = inflater.inflate(R.layout.fragment_main, container, false);
 
-/*
-        // Dummy data for forecast
-        String[] weekForecast = {"Today - Sunny - 75/58 ", "Tomorrow - Foggy - 60/44", "Thurs - Cloudy - 68/54", "Fri - Rain - 70/60",
-                "Sat - Sunny - 78/68", "Sun - Sunny - 83/57", "Mon - Rain - 53/35"};
-        List<String> weekForecastList = new ArrayList<String>(Arrays.asList(weekForecast));
-*/
 
-        // Creates adapter that will be attached to the list view. The parameters are context, layout, text view and the array.
-        mForecastAdapter = new ArrayAdapter<String>(getActivity(), R.layout.list_item_forecast, R.id.list_item_forecast_textview, new ArrayList<String>());
+        // Creates adapter that will be attached to the list view.
+        // The parameters are context, layout, text view and the array.
+        mForecastAdapter = new ArrayAdapter<String>(getActivity(),
+                R.layout.list_item_forecast,
+                R.id.list_item_forecast_textview,
+                new ArrayList<String>());
 
         // Get the list view from the xml and set adapter to it.
         ListView listView = (ListView) rootView.findViewById(R.id.listview_forecast);
@@ -74,11 +72,6 @@ public class ForecastFragment extends Fragment {
             }
         });
 
-        zipCode = "14214";
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        zipCode = preferences.getString("location", "14214");
-        Log.d(TAG, "ZipCode is " + zipCode);
-
         return rootView;
     }
 
@@ -86,11 +79,6 @@ public class ForecastFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
-/*
-        zipCode = "14214";
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        zipCode = preferences.getString("location","14214");
-*/
 
     }
 
@@ -101,8 +89,10 @@ public class ForecastFragment extends Fragment {
     }
 
     private void updateWeather() {
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        zipCode = preferences.getString(getString(R.string.pref_location_key), getString(R.string.pref_location_default));
+        SharedPreferences preferences =
+                PreferenceManager.getDefaultSharedPreferences(getActivity());
+        zipCode = preferences.getString(getString(R.string.pref_location_key),
+                getString(R.string.pref_location_default));
         Log.d(TAG, "ZipCode is " + zipCode);
         new FetchWeatherTask().execute(zipCode);
     }
@@ -168,7 +158,8 @@ public class ForecastFragment extends Fragment {
             String[] weatherDataArray = null;
 
             try {
-                final String FORECAST_BASE_URL = "http://api.openweathermap.org/data/2.5/forecast/daily?";
+                final String FORECAST_BASE_URL =
+                        "http://api.openweathermap.org/data/2.5/forecast/daily?";
                 final String QUERY_PARAM = "q";
                 final String FORMAT_PARAM = "mode";
                 final String UNITS_PARAM = "units";
@@ -221,9 +212,8 @@ public class ForecastFragment extends Fragment {
                 weatherDataArray = getWeatherDataFromJson(forecastJsonStr, numdays);
             } catch (IOException e) {
                 Log.e("PlaceholderFragment", "Error ", e);
-                // If the code didn't successfully get the weather data, there's no point in attempting
-                // to parse it.
-                forecastJsonStr = null;
+                // If the code didn't successfully get the weather data,
+                // there's no point in attempting to parse it.
             } catch (JSONException e) {
                 Log.e(TAG, "JSON error in JSON " + forecastJsonStr);
             } finally {
